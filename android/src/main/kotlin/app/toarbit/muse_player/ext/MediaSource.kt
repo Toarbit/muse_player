@@ -4,24 +4,27 @@ import android.content.Context
 import android.net.Uri
 import app.toarbit.muse_player.MusicPlayerServicePlugin
 import app.toarbit.muse_player.player.MusicMetadata
-import com.google.android.exoplayer2.source.ExtractorMediaSource
+import com.google.android.exoplayer2.database.ExoDatabaseProvider
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DataSpec
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
-import com.google.android.exoplayer2.upstream.cache.NoOpCacheEvictor
+import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor
 import com.google.android.exoplayer2.upstream.cache.SimpleCache
 import com.google.android.exoplayer2.util.Util
 import kotlinx.coroutines.runBlocking
+import java.io.File
 
 /**
  * Created by omit on 2020/4/30 for muse_player.
  */
+const val MAX_CACHE_SIZE: Long = 512 * 1024 * 1024
 
 internal fun MusicMetadata.toMediaSource(
         context: Context,
         servicePlugin: MusicPlayerServicePlugin
-): ExtractorMediaSource? {
+): ProgressiveMediaSource? {
     var factory: DataSource.Factory = DefaultDataSourceFactory(
             context,
             servicePlugin.config.userAgent
@@ -29,15 +32,17 @@ internal fun MusicMetadata.toMediaSource(
     )
     factory = UrlUpdatingDataSource.Factory(factory, servicePlugin)
     if (servicePlugin.config.enableCache) {
-        factory = CacheDataSourceFactory(SimpleCache(context.cacheDir, NoOpCacheEvictor()), factory)
+        val evictor = LeastRecentlyUsedCacheEvictor(MAX_CACHE_SIZE)
+        val databaseProvider = ExoDatabaseProvider(context)
+        factory = CacheDataSourceFactory(SimpleCache(File(context.cacheDir, "Media"), evictor, databaseProvider), factory)
     }
-    return ExtractorMediaSource.Factory(factory)
+    return ProgressiveMediaSource.Factory(factory)
             .setCustomCacheKey(mediaId)
             .createMediaSource(buildMediaUri(this))
 }
 
 
-private const val SCHEME = "quiet"
+private const val SCHEME = "muse"
 
 /**
  * Build a Decorated Uri for this Media.
