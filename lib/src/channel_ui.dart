@@ -38,9 +38,8 @@ class MusicPlayer extends ValueNotifier<MusicPlayerValue> with ChannelPlayerCall
     _uiChannel.invokeMethod("setPlayQueue", queue.toMap());
   }
 
-  /// TODO [anchor] 作用不明，参考 [getPreviousMusic]
-  Future<MusicMetadata> getNextMusic(@nonNull MusicMetadata anchor) async {
-    assert(anchor != null);
+  Future<MusicMetadata> getNextMusic(@nonNull MusicMetadata metadata) async {
+    assert(metadata != null);
     final Map map = await _uiChannel.invokeMethod("getNext", metadata.toMap());
     return createMusicMetadata(map);
   }
