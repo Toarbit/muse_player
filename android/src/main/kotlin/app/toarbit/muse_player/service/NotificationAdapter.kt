@@ -55,6 +55,11 @@ class NotificationAdapter(
         startNotificationRunner()
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    fun onStop() {
+        notificationBuilder.destroy()
+    }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         notificationBuilder.destroy()
@@ -120,7 +125,7 @@ class NotificationAdapter(
 class NotificationBuilder(private val context: Service) {
 
     companion object {
-        const val NOW_PLAYING_CHANNEL: String = "TODO" //TODO build channel from context
+        const val NOW_PLAYING_CHANNEL: String = "Now Playing" //TODO build channel from context
         const val NOW_PLAYING_NOTIFICATION: Int = 0xb339
 
     }

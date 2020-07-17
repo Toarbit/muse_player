@@ -15,7 +15,6 @@ import app.toarbit.muse_player.player.MusicMetadata
 import app.toarbit.muse_player.player.MusicPlayerSessionImpl
 import app.toarbit.muse_player.player.PlayMode
 import app.toarbit.muse_player.player.PlayQueue
-import app.toarbit.muse_player.receiver.BecomingNoisyReceiverAdapter
 import app.toarbit.muse_player.utils.LoggerLevel
 import app.toarbit.muse_player.utils.log
 
@@ -53,7 +52,6 @@ class MusicPlayerService : MediaBrowserServiceCompat(), LifecycleOwner {
         sessionToken = mediaSession.sessionToken
         mediaSession.setCallback(MediaSessionCallbackAdapter(playerSession))
         playerSession.addCallback(MusicSessionCallbackAdapter(mediaSession))
-        playerSession.addCallback(BecomingNoisyReceiverAdapter(this, playerSession))
         val notificationAdapter = NotificationAdapter(this, playerSession, mediaSession)
         playerSession.addCallback(notificationAdapter)
         lifecycle.addObserver(notificationAdapter)
@@ -123,9 +121,8 @@ class MusicPlayerService : MediaBrowserServiceCompat(), LifecycleOwner {
                         putString("flutter.quiet_player_playlist_title", playerSession.playQueue.queueTitle)
                         putInt("flutter.quiet_player_play_mode", playerSession.playMode)
                         log { "save playlist ${playerSession.playQueue.queueId} with size ${playerSession.playQueue.getQueue().size}" }
-                    }
+                    } else log { "skip save playlist" }
                 }.apply()
-        log { "skip save playlist" }
     }
 
 

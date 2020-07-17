@@ -130,6 +130,7 @@ internal class RemotePlayer : ServiceConnection {
     private val pendingExecution = mutableListOf<suspend (MusicPlayerSession) -> Unit>()
 
     override fun onServiceDisconnected(name: ComponentName?) {
+        playerSession?.destroy()
         playerSession = null
     }
 
