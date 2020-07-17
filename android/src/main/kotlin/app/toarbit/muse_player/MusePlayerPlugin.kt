@@ -8,6 +8,7 @@ import android.os.IBinder
 import app.toarbit.muse_player.player.MusicMetadata
 import app.toarbit.muse_player.player.PlayQueue
 import app.toarbit.muse_player.service.MusicPlayerService
+import app.toarbit.muse_player.utils.SleepTimer
 import app.toarbit.muse_player.utils.getNext
 import app.toarbit.muse_player.utils.getPrevious
 
@@ -96,6 +97,8 @@ private class MusePlayerUiChannel(
                             MusicMetadata.fromMap(call.arguments()),
                             session.current?.mediaId
                     )
+                    "getSleepTimer" -> SleepTimer.getMillisUntilFinish()
+                    "setSleepTimer" -> SleepTimer.toggleTimer(call.arguments())
                     else -> null
                 }
 

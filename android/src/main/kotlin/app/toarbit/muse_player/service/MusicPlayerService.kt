@@ -16,6 +16,7 @@ import app.toarbit.muse_player.player.MusicPlayerSessionImpl
 import app.toarbit.muse_player.player.PlayMode
 import app.toarbit.muse_player.player.PlayQueue
 import app.toarbit.muse_player.utils.LoggerLevel
+import app.toarbit.muse_player.utils.SleepTimer
 import app.toarbit.muse_player.utils.log
 
 /**
@@ -57,6 +58,12 @@ class MusicPlayerService : MediaBrowserServiceCompat(), LifecycleOwner {
         lifecycle.addObserver(notificationAdapter)
 
         loadPlaylist()
+        SleepTimer.addCallback(object : SleepTimer.Callback {
+            override fun onFinish() {
+                savePlaylist()
+                playerSession.pause()
+            }
+        })
     }
 
     override fun onBind(intent: Intent?): IBinder? {

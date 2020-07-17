@@ -78,6 +78,14 @@ class MusicPlayer extends ValueNotifier<MusicPlayerValue> with ChannelPlayerCall
   }
 
   void removeMusicItem(MusicMetadata metadata) {}
+
+  Future<int> getSleepTimer() async {
+    final int time = (await _uiChannel.invokeMethod<int>("getSleepTimer") / 1000).floor();
+    return time;
+  }
+  Future<bool> setSleepTimer(int time) {
+    return _uiChannel.invokeMethod<bool>("setSleepTimer", time);
+  }
 }
 
 class MusicPlayerValue {
