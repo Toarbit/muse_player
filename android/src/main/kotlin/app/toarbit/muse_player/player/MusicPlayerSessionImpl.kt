@@ -33,7 +33,9 @@ class MusicPlayerSessionImpl constructor(private val context: Context) : MusicPl
 
     // Wrap a SimpleExoPlayer with a decorator to handle audio focus for us.
     private val player: ExoPlayer by lazy {
-        ExoPlayerFactory.newSimpleInstance(context).apply {
+        SimpleExoPlayer.Builder(context).build().apply {
+            setWakeMode(C.WAKE_MODE_NETWORK)
+            setHandleAudioBecomingNoisy(true)
             setAudioAttributes(audioAttribute, true)
             addListener(ExoPlayerEventListener())
         }
@@ -228,7 +230,7 @@ class MusicPlayerSessionImpl constructor(private val context: Context) : MusicPl
         override fun onLoadingChanged(isLoading: Boolean) {
         }
 
-        override fun onPlayerError(error: ExoPlaybackException?) {
+        override fun onPlayerError(error: ExoPlaybackException) {
             invalidatePlaybackState()
         }
 
@@ -249,11 +251,11 @@ class MusicPlayerSessionImpl constructor(private val context: Context) : MusicPl
             }
         }
 
-        override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters?) {
+        override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters) {
             invalidatePlaybackState()
         }
 
-        override fun onTimelineChanged(timeline: Timeline?, manifest: Any?, reason: Int) {
+        override fun onTimelineChanged(timeline: Timeline, reason: Int) {
             invalidateMetadata()
         }
 
