@@ -24,7 +24,7 @@ const val MAX_CACHE_SIZE: Long = 512 * 1024 * 1024
 internal fun MusicMetadata.toMediaSource(
         context: Context,
         servicePlugin: MusicPlayerServicePlugin
-): ProgressiveMediaSource? {
+): ProgressiveMediaSource {
     var factory: DataSource.Factory = DefaultDataSourceFactory(
             context,
             servicePlugin.config.userAgent

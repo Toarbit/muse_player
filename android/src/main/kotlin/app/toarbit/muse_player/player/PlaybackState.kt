@@ -30,7 +30,7 @@ data class PlaybackState constructor(
                 "position" to position,
                 "bufferedPosition" to bufferedPosition,
                 "speed" to speed,
-                "error" to null,
+                "error" to error?.errorCode,
                 "updateTime" to updateTime
         )
     }
@@ -79,11 +79,10 @@ enum class State {
     Error,
 }
 
-data class PlayerError(val errorCode: Int, val errorMessage: String) : Parcelable {
+data class PlayerError(val errorCode: Int, val errorMessage: String?) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
-            parcel.readString()) {
-    }
+            parcel.readString())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(errorCode)
