@@ -5,6 +5,7 @@ import app.toarbit.muse_player.MusicPlayerServicePlugin
 import app.toarbit.muse_player.MusicPlayerSession
 import app.toarbit.muse_player.MusicResult
 import app.toarbit.muse_player.MusicSessionCallback
+import app.toarbit.muse_player.ext.durationOrZero
 import app.toarbit.muse_player.ext.mapPlaybackState
 import app.toarbit.muse_player.ext.toMediaSource
 import app.toarbit.muse_player.service.ShimMusicSessionCallback
@@ -198,8 +199,15 @@ class MusicPlayerSessionImpl constructor(private val context: Context) : MusicPl
         invalidatePlayQueue()
     }
 
-    private var playbackStateBackup: PlaybackState =
-            PlaybackState(State.None, 0, 0, 1F, null, System.currentTimeMillis())
+    private var playbackStateBackup: PlaybackState = PlaybackState(
+            state = State.None,
+            position = 0,
+            bufferedPosition = 0,
+            speed = 1F,
+            error = null,
+            updateTime = System.currentTimeMillis(),
+            duration = player.durationOrZero()
+    )
 
     private fun invalidatePlaybackState() {
         val playerError = player.playbackError
@@ -210,15 +218,16 @@ class MusicPlayerSessionImpl constructor(private val context: Context) : MusicPl
                 bufferedPosition = player.bufferedPosition,
                 speed = player.playbackParameters.speed,
                 error = playerError?.let { PlayerError(it.type, it.message ?: "") },
-                updateTime = System.currentTimeMillis()
+                updateTime = System.currentTimeMillis(),
+                duration = player.durationOrZero(),
         )
         this.playbackStateBackup = playbackState
         shimSessionCallback.onPlaybackStateChanged(playbackState)
     }
 
     private fun invalidateMetadata() {
-        val duration = if (player.duration == C.TIME_UNSET) 0 else player.duration
-        shimSessionCallback.onMetadataChanged(metadata?.copyWith(duration = duration))
+        metadata = metadata?.copyWith(duration = player.durationOrZero())
+        shimSessionCallback.onMetadataChanged(metadata)
     }
 
     private fun invalidatePlayQueue() {

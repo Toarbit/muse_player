@@ -2,6 +2,7 @@ package app.toarbit.muse_player.ext
 
 import app.toarbit.muse_player.player.PlayerError
 import app.toarbit.muse_player.player.State
+import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 
@@ -23,4 +24,9 @@ fun ExoPlayer.mapPlaybackState(): State {
         Player.STATE_IDLE -> State.None
         else -> State.Paused
     }
+}
+
+fun Player.durationOrZero(): Long {
+    val duration = duration
+    return if (duration == C.TIME_UNSET) 0 else duration
 }
