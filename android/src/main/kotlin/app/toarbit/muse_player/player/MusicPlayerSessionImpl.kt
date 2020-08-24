@@ -1,6 +1,7 @@
 package app.toarbit.muse_player.player
 
 import android.content.Context
+import android.os.SystemClock
 import app.toarbit.muse_player.MusicPlayerServicePlugin
 import app.toarbit.muse_player.MusicPlayerSession
 import app.toarbit.muse_player.MusicResult
@@ -218,7 +219,7 @@ class MusicPlayerSessionImpl constructor(private val context: Context) : MusicPl
                 bufferedPosition = player.bufferedPosition,
                 speed = player.playbackParameters.speed,
                 error = playerError?.let { PlayerError(it.type, it.message ?: "") },
-                updateTime = System.currentTimeMillis(),
+                updateTime = SystemClock.uptimeMillis(),
                 duration = player.durationOrZero(),
         )
         this.playbackStateBackup = playbackState
