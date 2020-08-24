@@ -28,7 +28,7 @@ private const val UI_PLUGIN_NAME = "app.toarbit.muse_player/player.ui"
 /** MusePlayerPlugin */
 class MusePlayerPlugin: FlutterPlugin {
 
-    private lateinit var playerUiChannel: MusePlayerUiChannel
+    private var playerUiChannel: MusePlayerUiChannel? = null
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         val channel = MethodChannel(binding.binaryMessenger, UI_PLUGIN_NAME)
@@ -37,7 +37,7 @@ class MusePlayerPlugin: FlutterPlugin {
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        playerUiChannel.channel.setMethodCallHandler(null)
+        playerUiChannel?.destroy()
     }
 
     // This static function is optional and equivalent to onAttachedToEngine. It supports the old
@@ -62,7 +62,7 @@ class MusePlayerPlugin: FlutterPlugin {
  * 代理操作 [MusicPlayerService]
  */
 private class MusePlayerUiChannel(
-        val channel: MethodChannel,
+        channel: MethodChannel,
         context: Context
 ) : MethodCallHandler {
 
@@ -70,8 +70,13 @@ private class MusePlayerUiChannel(
 
     private val uiPlaybackPlugin = MusicPlayerCallbackPlugin(channel)
 
+    private var destroyed = false
+
     init {
-        remotePlayer.doWhenSessionReady { it.addCallback(uiPlaybackPlugin) }
+        remotePlayer.doWhenSessionReady {
+            if (!destroyed)
+                it.addCallback(uiPlaybackPlugin)
+        }
     }
 
     override fun onMethodCall(call: MethodCall, result: Result) =
@@ -110,6 +115,10 @@ private class MusePlayerUiChannel(
                 }
             }
 
+    fun destroy() {
+        destroyed = true
+        remotePlayer.playerSession?.removeCallback(uiPlaybackPlugin)
+    }
 }
 
 
@@ -129,7 +138,8 @@ private fun Context.startMusicService(): RemotePlayer {
 
 internal class RemotePlayer : ServiceConnection {
 
-    private var playerSession: MusicPlayerSession? = null
+    var playerSession: MusicPlayerSession? = null
+        private set
 
     private val pendingExecution = mutableListOf<suspend (MusicPlayerSession) -> Unit>()
 
