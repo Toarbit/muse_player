@@ -97,6 +97,7 @@ private class MusePlayerUiChannel(
                             MusicMetadata.fromMap(call.arguments()),
                             session.current?.mediaId
                     )
+                    "setPlaybackSpeed" -> session.setPlaybackSpeed(call.arguments())
                     "getSleepTimer" -> SleepTimer.getMillisUntilFinish()
                     "setSleepTimer" -> SleepTimer.toggleTimer(call.arguments())
                     else -> null

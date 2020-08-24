@@ -45,4 +45,9 @@ class TransportControls {
   Future<void> setPlayMode(PlayMode playMode) async {
     await _channel.invokeMethod("setPlayMode", playMode.index);
   }
+
+  Future<void> setPlaybackSpeed(double rate) async {
+    await _channel.invokeMethod("setPlaybackSpeed", rate);
+  }
+
 }

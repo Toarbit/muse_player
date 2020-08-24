@@ -183,6 +183,11 @@ class MusicPlayerSessionImpl constructor(private val context: Context) : MusicPl
         invalidatePlayQueue()
     }
 
+    override fun setPlaybackSpeed(speed: Double) {
+        player.setPlaybackParameters(PlaybackParameters(speed.toFloat()))
+        invalidatePlaybackState()
+    }
+
     /**
      * insert a list to current playing queue
      *

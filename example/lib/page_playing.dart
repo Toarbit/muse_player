@@ -34,6 +34,7 @@ class PagePlaying extends StatelessWidget {
                   onPressed: () {
                     PlayerWidget.transportControls(context).skipToNext();
                   }),
+              MusicPlaybackSpeedButton(),
             ],
           )
         ]),
