@@ -65,7 +65,6 @@ MusicMetadata createMusicMetadata(Map map) {
 }
 
 PlaybackState createPlaybackState(Map map) {
-  DateTime.now();
   return PlaybackState(
     state: PlayerState.values[map['state'] as int],
     position: map['position'] as int,

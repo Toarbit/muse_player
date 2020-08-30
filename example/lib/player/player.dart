@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:muse_player/muse_player.dart';
 
 class PlayerWidget extends StatefulWidget {
@@ -37,6 +38,11 @@ class _PlayerWidgetState extends State<PlayerWidget> {
       ..addListener(() {
         setState(() {});
       });
+    player.playbackState.addListener(() {
+      if (player.playbackState.value.error != null) {
+        toast("play ${player.metadata.value?.title} failed. error : ${player.playbackState.value.error}");
+      }
+    });
   }
 
   @override

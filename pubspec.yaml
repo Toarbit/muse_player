@@ -11,7 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  system_clock: ^0.0.1
+  system_clock: ^0.3.1
 
 dev_dependencies:
   flutter_test:

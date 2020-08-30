@@ -13,12 +13,3 @@ export 'src/utils/progress_track_container.dart';
 ///
 /// Latest commit 8663cb0 on 1 Mar
 ///
-//class MusePlayer {
-//  static const MethodChannel _channel =
-//      const MethodChannel('muse_player');
-//
-//  static Future<String> get platformVersion async {
-//    final String version = await _channel.invokeMethod('getPlatformVersion');
-//    return version;
-//  }
-//}
