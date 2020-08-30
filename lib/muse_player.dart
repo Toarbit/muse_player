@@ -11,5 +11,5 @@ export 'src/channel_service.dart';
 export 'src/utils/progress_track_container.dart';
 
 ///
-/// Latest commit 8663cb0 on 1 Mar
+/// Sync Upto Latest commit 2bdcb8f on Aug 29, 2020
 ///
