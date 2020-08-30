@@ -38,6 +38,14 @@ final medias = [
 final playQueueList = [
   PlayQueue(queueTitle: "Simple Test", queueId: "test1", queue: medias),
   PlayQueue(queueTitle: "Auto Fetch Test", queueId: "fm", queue: medias.getRange(0, 1).toList()),
+  PlayQueue(queueTitle: "Failed to Play", queueId: "test_failed", queue: [
+    MusicMetadata(
+      title: "Cang",
+      subtitle: "Cang - xu meng yuan",
+      mediaId: "hide",
+      mediaUri: "asset:///tracks/file_not_exists.mp3",
+    ),
+  ])
 ];
 
 void main() => runApp(ExampleApp());
