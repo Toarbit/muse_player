@@ -23,16 +23,18 @@ import kotlinx.coroutines.withTimeout
 
 data class Config(
         val enableCache: Boolean = false,
-        val userAgent: String?
+        val userAgent: String?,
+        val pauseWhenTaskRemoved: Boolean,
 ) {
 
     companion object {
-        val Default = Config(enableCache = false, userAgent = null)
+        val Default = Config(enableCache = false, userAgent = null, pauseWhenTaskRemoved = true)
     }
 
     constructor(map: Map<String, Any>) : this(
             enableCache = map["enableCache"] as? Boolean ?: false,
-            userAgent = map["userAgent"] as? String
+            userAgent = map["userAgent"] as? String,
+            pauseWhenTaskRemoved = map["pauseWhenTaskRemoved"] as? Boolean ?: true
     )
 
 }

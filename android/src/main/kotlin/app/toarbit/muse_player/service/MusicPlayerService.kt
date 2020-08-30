@@ -82,7 +82,9 @@ class MusicPlayerService : MediaBrowserServiceCompat(), LifecycleOwner {
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
-        playerSession.stop()
+        if (playerSession.servicePlugin.config.pauseWhenTaskRemoved) {
+            playerSession.stop()
+        }
         savePlaylist()
     }
 
