@@ -8,7 +8,7 @@ export 'src/player/play_mode.dart';
 export 'src/channel_ui.dart';
 export 'src/channel_service.dart';
 
-export 'src/utils/progress_track_containter.dart';
+export 'src/utils/progress_track_container.dart';
 
 ///
 /// Latest commit 8663cb0 on 1 Mar
