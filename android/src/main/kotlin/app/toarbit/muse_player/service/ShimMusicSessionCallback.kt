@@ -1,6 +1,6 @@
 package app.toarbit.muse_player.service
 
-import android.os.IBinder
+import android.os.*
 import app.toarbit.muse_player.MusicSessionCallback
 import app.toarbit.muse_player.player.MusicMetadata
 import app.toarbit.muse_player.player.PlayQueue
@@ -12,31 +12,48 @@ import app.toarbit.muse_player.player.PlaybackState
 
 internal class ShimMusicSessionCallback : MusicSessionCallback {
 
-    private val callbacks = mutableListOf<MusicSessionCallback>()
+    private val callbacks = RemoteCallbackList<MusicSessionCallback>()
 
+    private val handler = Handler(Looper.getMainLooper())
 
+    private fun broadcast(action: MusicSessionCallback.() -> Unit) {
+        // make sure broadcast in one thread.
+        // does it need to switch to IO thread?
+        handler.post {
+            var i = callbacks.beginBroadcast()
+            while (i > 0) {
+                i--
+                try {
+                    callbacks.getBroadcastItem(i).action()
+                } catch (e: RemoteException) {
+
+                }
+            }
+            callbacks.finishBroadcast()
+        }
+    }
     fun addCallback(callback: MusicSessionCallback) {
-        callbacks.add(callback)
+        callbacks.register(callback)
     }
 
     fun removeCallback(callback: MusicSessionCallback) {
-        callbacks.remove(callback)
+        callbacks.unregister(callback)
     }
 
     override fun onPlaybackStateChanged(state: PlaybackState) {
-        callbacks.forEach { it.onPlaybackStateChanged(state) }
+        broadcast { onPlaybackStateChanged(state) }
     }
 
     override fun onPlayQueueChanged(queue: PlayQueue) {
-        callbacks.forEach { it.onPlayQueueChanged(queue) }
+        broadcast { onPlayQueueChanged(queue) }
     }
 
     override fun onMetadataChanged(metadata: MusicMetadata?) {
-        callbacks.forEach { it.onMetadataChanged(metadata) }
+        broadcast { onMetadataChanged(metadata) }
     }
 
     override fun onPlayModeChanged(playMode: Int) {
-        callbacks.forEach { it.onPlayModeChanged(playMode) }
+        broadcast { onPlayModeChanged(playMode) }
     }
 
     override fun asBinder(): IBinder {
