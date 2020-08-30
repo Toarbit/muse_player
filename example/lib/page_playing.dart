@@ -28,7 +28,7 @@ class PagePlaying extends StatelessWidget {
                   onPressed: () {
                     PlayerWidget.transportControls(context).skipToPrevious();
                   }),
-              PlayPauseButton(),
+              SizedBox(width: 56, height: 56, child: PlayPauseButton()),
               IconButton(
                   icon: Icon(Icons.skip_next),
                   onPressed: () {
@@ -109,11 +109,13 @@ class _PlayingProgressState extends State<_PlayingProgress> {
                 },
                 onChangeEnd: (value) {
                   setState(() {
-                    _isUserTracking = false;
                     if (_isPausedByTracking) {
                       context.transportControls.play();
                     }
                     context.transportControls.seekTo(value.toInt());
+                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                      _isUserTracking = false;
+                    });
                   });
                 },
               ),
